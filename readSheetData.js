@@ -6,13 +6,13 @@
 function getFirstDate() {
   var sheet = ss.getSheetByName("Update Settings");
 
-  return getCellValue(2, 5, sheet);
+  return getCellValue(2, 5, sheet).toISOString();
 }
 
 function getEndDate() {
   var sheet = ss.getSheetByName("Update Settings");
 
-  return getCellValue(2, 6, sheet);
+  return getCellValue(2, 6, sheet).toISOString();
 }
 
 

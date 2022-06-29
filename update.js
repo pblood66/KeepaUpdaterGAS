@@ -10,7 +10,7 @@ function updateSheetBatches() {
       ++row
    }
    var productStart = startElapsedTime()
-   var products = fetchBatchProduct(asins, getIntervalDate());
+   var products = fetchBatchProduct(asins, getFirstDate(), getEndDate());
    Logger.log(`Elapsed Product Time: ${endElapsedTime(productStart)}`);
 
    for (let i = 0; i < products.length; ++i) {
@@ -62,7 +62,7 @@ function flexibleUpdateProductBatches() {
       var indexes = getAllIndexes(asins, 0);
 
       var productStart = startElapsedTime()
-      var products = fetchBatchProduct(asins, getIntervalDate());
+      var products = fetchBatchProduct(asins, getFirstDate(), getEndDate());
       Logger.log(`Elapsed Product Time: ${endElapsedTime(productStart)}`);
 
       for (index of indexes) {
@@ -126,7 +126,7 @@ function GETPRODUCTDATA(asin, startDate, endDate, ...queries) {
    Logger.log(date)
 
    Logger.log(asin);
-   var product = fetchProduct(asin, date)
+   var product = fetchProduct(asin, startDate, endDate)
 
    if (queries.length == 0) {
       settings = getUpdateValues();
