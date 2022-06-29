@@ -71,11 +71,11 @@ class Product {
   }
 
   get avgAmazonAtInterval() {
-    return averageAtInterval(this.history.amazonPrice, this.startDate, this.endDate) / 100;
+    return parseFloat(averageAtInterval(this.history.amazonPrice, this.startDate, this.endDate)) / 100;
   }
 
   get avgNewAtInterval() {
-    return averageAtInterval(this.history.newPrice, this.startDate, this.endDate) / 100;
+    return parseFloat(averageAtInterval(this.history.newPrice, this.startDate, this.endDate)) / 100;
   }
 
   get avgSalesRankAtInterval() {

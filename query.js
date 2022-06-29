@@ -89,7 +89,6 @@ function fetchProduct(asin, startDate, endDate) {
   var time, data;
 
   time = startDate + "," + endDate
-  Logger.log(time)
 
   var url = getProductURL(asin, time);
   var response = UrlFetchApp.fetch(url);
@@ -97,7 +96,6 @@ function fetchProduct(asin, startDate, endDate) {
   // parse and convert to a JSON object
   
   var data = JSON.parse(response.getContentText());
-  Logger.log(data)
 
   // return the product as a JSON object
   var currProduct = new Product(data.products[0], startDate, endDate);

@@ -1,7 +1,21 @@
 function findNearIndex(arr, value) {
-  for (let i = 0; i < arr.length / 2; ++i) {
-    if (arr[i * 2] <= value && arr[(i * 2) + 2] >= value) {
-      return i * 2;
+  
+  // if first index greater than value
+  if (parseInt(arr[0]) > value) {
+      return 0;
+  }
+  // if last index less than value
+  if (parseInt(arr[arr.length - 1]) < value) {
+    return arr.length - 1;
+  }
+
+  for (let i = 0; i < arr.length; ++i) {
+    if (i % 2 == 1) {
+      continue;
+    }
+    // case is between values
+    if (arr[i] <= value && arr[i + 2] > value) {
+      return i;
     }
   }
   //value not found
@@ -53,12 +67,14 @@ function updateRow(row, column, product, settings) {
     updateCell(row, column + 1, "Invalid ASIN", sheet);
     return;
   }
+  Logger.log(product.asin)
 
   for (let i = 0; i < settings.length / 2; i++) {
     if (settings[(i * 2) + 1]) {
       let currCol = column + i;
       try {
         let value = product[settings[i * 2]];
+        Logger.log(`${settings[i * 2]}: ${value}`)
         updateCell(row, currCol, value, sheet)
       }
       catch (err) {
@@ -83,7 +99,7 @@ function updateCell(row, col, data, sheet) {
   var cell = sheet.getRange(range.getA1Notation());
 
   // if no data is given, print as data unavailable
-  if (data < 0 || data == null) {
+  if (data < 0 || data == null || data == "NaN") {
     cell.setValue("Unavailable");
   }
   else if (data === "Invalid ASIN") {
