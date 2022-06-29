@@ -1,9 +1,15 @@
+/**
+ * 
+ * @param {Array} arr 
+ * @param {Number} val 
+ * @returns array of indexes with a certain value
+ */
 function getAllIndexes(arr, val) {
-    var indexes = [], i;
-    for(i = 0; i < arr.length; i++)
-        if (arr[i] === val)
-            indexes.push(i);
-    return indexes;
+  var indexes = [], i;
+  for (i = 0; i < arr.length; i++)
+    if (arr[i] === val)
+      indexes.push(i);
+  return indexes;
 }
 
 /**
@@ -22,7 +28,7 @@ function updateRow(row, product, settings) {
         let value = product[settings[i * 2]];
         updateCell(row, i + 2, value, sheet)
       }
-      catch(err) {
+      catch (err) {
         Logger.log(err);
         updateCell(row, i + 2, "Unavailable", sheet)
       }
@@ -45,7 +51,7 @@ function updateRow(row, column, product, settings) {
         let value = product[settings[i * 2]];
         updateCell(row, currCol, value, sheet)
       }
-      catch(err) {
+      catch (err) {
         Logger.log(err);
         updateCell(row, currCol, "Unavailable", sheet)
       }
@@ -65,7 +71,7 @@ function updateRow(row, column, product, settings) {
 function updateCell(row, col, data, sheet) {
   var range = sheet.getRange(row, col);
   var cell = sheet.getRange(range.getA1Notation());
-  
+
   // if no data is given, print as data unavailable
   if (data < 0 || data == null) {
     cell.setValue("Unavailable");
@@ -100,9 +106,9 @@ function convertToKeepaMin(date) {
 function convertToDate(keepaMinutes) {
   epochTime = keepaMinutes + 21564000;
   epochTime *= 60;
-  
+
   var date = new Date(0); // The 0 there is the key, which sets the date to the epoch
   date.setUTCSeconds(epochTime);
 
-  return date.toLocaleDateString("en-US",{ year: 'numeric', month: '2-digit', day: '2-digit'});
+  return date.toLocaleDateString("en-US", { year: 'numeric', month: '2-digit', day: '2-digit' });
 }
