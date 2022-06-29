@@ -1,3 +1,11 @@
+function findNearIndex(arr, value) {
+  for (let i = 0; i < arr.length / 2; ++i) {
+    if (arr[i * 2] <= value && arr[(i * 2) + 2] >= value) {
+      return i * 2;
+    }
+  }
+}
+
 /**
  * 
  * @param {Array} arr 
