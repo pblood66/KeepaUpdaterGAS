@@ -110,23 +110,13 @@ function GETPRODUCTDATA(asin, startDate, endDate, ...queries) {
    var values = [];
    var date = "";
 
-   if (typeof startDate == 'string') {
-      date += startDate + ",";
-   }
-   else {
-      date += startDate.toISOString() + ","
-   }
-   if (typeof endDate == 'string') {
-      date += endDate;
-   }
-   else {
-      date += endDate.toISOString();
-   }
+   var start = new Date(startDate);
+   var end = new Date(endDate)
 
    Logger.log(date)
 
    Logger.log(asin);
-   var product = fetchProduct(asin, startDate, endDate)
+   var product = fetchProduct(asin, start.toISOString(), end.toISOString())
 
    if (queries.length == 0) {
       settings = getUpdateValues();

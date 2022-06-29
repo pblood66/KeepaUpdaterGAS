@@ -1,8 +1,5 @@
 function test() {
-  var product = fetchProduct("B00IYFB8VI", getFirstDate(), getEndDate());
+  var product = fetchProduct("B084C9XCF5", "2019-02-05", "2021-05-12");
 
-  Logger.log(product.startDate)
-  Logger.log(product.endDate)
-  Logger.log(product.avgAmazonAtInterval)
-  Logger.log(product.avgSalesRankAtInterval)
+  
 }
