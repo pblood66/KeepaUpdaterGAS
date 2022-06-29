@@ -79,7 +79,7 @@ class Product {
   }
 
   get avgSalesRankAtInterval() {
-    return averageAtInterval(this.history.salesRank, this.startDate, this.endDate);
+    return parseInt(averageAtInterval(this.history.salesRank, this.startDate, this.endDate));
   }
 
   get firstAmazonStock() {

@@ -4,6 +4,8 @@ function findNearIndex(arr, value) {
       return i * 2;
     }
   }
+  //value not found
+  return arr.length - 1;
 }
 
 /**
