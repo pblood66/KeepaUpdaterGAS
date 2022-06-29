@@ -71,7 +71,15 @@ class Product {
   }
 
   get avgAmazonAtInterval() {
+    return averageAtInterval(this.history.amazonPrice, this.startDate, this.endDate) / 100;
+  }
+
+  get avgNewAtInterval() {
     return averageAtInterval(this.history.newPrice, this.startDate, this.endDate) / 100;
+  }
+
+  get avgSalesRankAtInterval() {
+    return averageAtInterval(this.history.salesRank, this.startDate, this.endDate);
   }
 
   get firstAmazonStock() {
