@@ -4,10 +4,10 @@
  * @param {Object} key: query, value: value
  * @return {String} encoded url endpoint 
  */
-String.prototype.addQuery = function(obj) {
-  return this + Object.keys(obj).reduce(function(prev, curr, index) {
+String.prototype.addQuery = function (obj) {
+  return this + Object.keys(obj).reduce(function (prev, curr, index) {
     return prev + (index == 0 ? "?" : "&") + curr + "=" + encodeURIComponent(obj[curr]);
-  },"");
+  }, "");
 }
 
 
@@ -57,18 +57,20 @@ function checkTokens() {
 
   // Parse as a JSON object
   data = JSON.parse(response.getContentText());
-  
+
   return data;
 }
 
-function fetchBatchProduct(asins, date) {
+function fetchBatchProduct(asins, startDate, endDate) {
+  let date = startDate + "," + endDate;
+
   var url = getProductURL(asins, date);
   var response = UrlFetchApp.fetch(url);
   var data = JSON.parse(response.getContentText())
   var products = []
-  
+
   for (let product of data.products) {
-    let currProduct = new Product(product);
+    let currProduct = new Product(product, startDate, endDate);
     products.push(currProduct);
   }
 
@@ -83,15 +85,10 @@ function fetchBatchProduct(asins, date) {
  * @return {Object} Product Object
  */
 
-function fetchProduct(asin, date = 0) {
-  var time, data; 
+function fetchProduct(asin, startDate, endDate) {
+  var time, data;
 
-  if (!date) {
-    time = 1;
-  }
-  else {
-    time = date;
-  }
+  time = startDate + "," + endDate
 
   var url = getProductURL(asin, time);
   var response = UrlFetchApp.fetch(url);

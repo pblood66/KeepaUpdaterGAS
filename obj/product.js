@@ -1,5 +1,8 @@
 class Product {
-  constructor(data) {
+  constructor(data, startDate, endDate) {
+    this.startDate = startDate;
+    this.endDate = endDate;
+
     // Basic Product Values
     this.title = data['title'];
     this.asin = data['asin'];
@@ -25,16 +28,16 @@ class Product {
     this.features = data['features'];
     this.isAdultProduct = data['isAdultProduct'];
 
-    this._packageDimensions = new Dimensions(data['packageHeight'], 
-                      data['packageLength'], data['packageWidth'], 
-                      data['packageWeight'], data['packageQuantity']);
-    this._itemDimensions = new Dimensions(data['itemHeight'], 
-                      data['itemLength'], data['itemWidth'], 
-                      data['itemWeight'], data['itemQuantity']);
+    this._packageDimensions = new Dimensions(data['packageHeight'],
+      data['packageLength'], data['packageWidth'],
+      data['packageWeight'], data['packageQuantity']);
+    this._itemDimensions = new Dimensions(data['itemHeight'],
+      data['itemLength'], data['itemWidth'],
+      data['itemWeight'], data['itemQuantity']);
 
     // Category values
     this._rootCategory = data['rootCategory'];
-    this._categoryTree = data['categoryTree'];    
+    this._categoryTree = data['categoryTree'];
 
     // Updates Times
     this.trackingSince = convertToDate(data['trackingSince']);
@@ -57,14 +60,14 @@ class Product {
     this.avg30 = new Prices(data['stats']['avg30']);
     this.avg90 = new Prices(data['stats'['avg90']]);
     this.avg180 = new Prices(data['stats']['avg180']);
-    
+
     this.imagesCSV = data['imagesCSV'];
     this.frequentlyBoughtTogether = data['frequentlyBoughtTogether'];
     this.itemVariations = data['variations'];
-    
+
     this.rankDrop30 = data['stats']['salesRankDrops30'];
     this.rankDrop90 = data['stats']['salesRankDrops90'];
-    this.rankDrop180 = data['stats']['salesRankDrops180']; 
+    this.rankDrop180 = data['stats']['salesRankDrops180'];
   }
 
   get firstAmazonStock() {
@@ -134,7 +137,7 @@ class Product {
   }
 
   get availability() {
-    switch(this._amazonAvailability) {
+    switch (this._amazonAvailability) {
       case -1:
         return "No Amazon offer available";
         break;
@@ -159,20 +162,20 @@ class Product {
   get salesRank() { return this.current.salesRank; }
   get rating() { return this.current.rating; }
   get countReviews() { return this.current.reviewCount; }
-  
+
   get productDimensions() { return this._productDimensions.toString(); }
   get itemDimensions() { return this._itemDimensions.toString(); }
-  get ean() { 
+  get ean() {
     if (this._eanList == null) {
       return 0;
     }
-    return this._eanList[0]; 
+    return this._eanList[0];
   }
   get upc() {
     if (this._upcList == null) {
       return 0;
-    } 
-    return this._upcList[0]; 
+    }
+    return this._upcList[0];
   }
 
   get minAmazonPrice() { return this.min.amazonPrice[1] / 100; }
@@ -186,7 +189,7 @@ class Product {
   get minCollectiblePrice() { return this.min.collectible[1] / 100; }
   get maxCollectiblePrice() { return this.max.collectible[1] / 100; }
   get minFbmPrice() { return this.min.fbm[1] / 100; }
-  get maxFbmPrice() { return this.max.fbm[1] / 100; } 
+  get maxFbmPrice() { return this.max.fbm[1] / 100; }
   get minLightningDealPrice() { return this.min.lightningDeal[1] / 100; }
   get maxLightningDealPrice() { return this.max.lightningDeal[1] / 100; }
   get minWarehousePrice() { return this.min.warehouse[1] / 100; }
@@ -323,8 +326,8 @@ class Dimensions {
     this.weight = weight;
     this.quantity = quantity;
   }
-  
+
   toString() {
-    return this.length + "mm x " + this.width + "mm x " + this.height +"mm " + this.weight + "g"
+    return this.length + "mm x " + this.width + "mm x " + this.height + "mm " + this.weight + "g"
   }
 }
