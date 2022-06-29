@@ -1,8 +1,11 @@
 function averageAtInterval(arr, startDate, endDate) {
+   Logger.log(arr)
    var startIndex = findNearIndex(arr, startDate);
    var endIndex = findNearIndex(arr, endDate) + 2;
+
+   Logger.log(`start: ${startIndex} end: ${endIndex}`)
    var intervalArr = arr.slice(startIndex, endIndex);
-   console.log(intervalArr)
+   Logger.log(intervalArr)
 
    return averageKeepaPrices(intervalArr);
 }

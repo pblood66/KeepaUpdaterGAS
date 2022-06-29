@@ -1,5 +1,6 @@
 function test() {
-  var product = fetchProduct("B09C14T9C7", getIntervalDate());
+  var product = fetchProduct("B00IYFB8VI", getFirstDate(), getEndDate());
 
-  Logger.log(product.title)
+  Logger.log(product.startDate)
+  Logger.log(product.avgAmazonAtInterval)
 }

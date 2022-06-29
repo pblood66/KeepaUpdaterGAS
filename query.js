@@ -97,7 +97,7 @@ function fetchProduct(asin, startDate, endDate) {
   var data = JSON.parse(response.getContentText());
 
   // return the product as a JSON object
-  var currProduct = new Product(data.products[0]);
+  var currProduct = new Product(data.products[0], startDate, endDate);
 
   return currProduct;
 }

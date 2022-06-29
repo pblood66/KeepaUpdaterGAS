@@ -1,7 +1,7 @@
 class Product {
   constructor(data, startDate, endDate) {
-    this.startDate = startDate;
-    this.endDate = endDate;
+    this.startDate = convertToKeepaMin(startDate);
+    this.endDate = convertToKeepaMin(endDate);
 
     // Basic Product Values
     this.title = data['title'];
@@ -68,6 +68,10 @@ class Product {
     this.rankDrop30 = data['stats']['salesRankDrops30'];
     this.rankDrop90 = data['stats']['salesRankDrops90'];
     this.rankDrop180 = data['stats']['salesRankDrops180'];
+  }
+
+  get avgAmazonAtInterval() {
+    return averageAtInterval(this.history.newPrice, this.startDate, this.endDate) / 100;
   }
 
   get firstAmazonStock() {
