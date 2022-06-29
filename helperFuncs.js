@@ -44,7 +44,7 @@ function getAllIndexes(arr, val) {
  * @return {void}  
  */
 function updateRow(row, product, settings) {
-  var sheet = ss.getSheetByName("Products");
+  var sheet = ss.getActiveSheet();
 
   for (let i = 0; i < settings.length / 2; i++) {
     if (settings[(i * 2) + 1]) {
@@ -61,7 +61,7 @@ function updateRow(row, product, settings) {
 }
 
 function updateRow(row, column, product, settings) {
-  var sheet = ss.getSheetByName("Products");
+  var sheet = ss.getActiveSheet();
 
   if (product == 0) {
     updateCell(row, column + 1, "Invalid ASIN", sheet);

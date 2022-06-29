@@ -1,5 +1,5 @@
 function updateSheetBatches() {
-   var sheet = ss.getSheetByName("Products");
+   var sheet = ss.getActiveSheet();
    var updateStatus = getUpdateValues();
    var asins = [];
    var rowOffset = 2;
@@ -21,7 +21,7 @@ function updateSheetBatches() {
 }
 
 function flexibleUpdateProductBatches() {
-   var sheet = ss.getSheetByName("Products");
+   var sheet = ss.getActiveSheet();
    var selection = ss.getSelection();
    var activeRange = selection.getActiveRange();
    var updateStatus = getUpdateValues();
