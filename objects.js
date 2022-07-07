@@ -70,6 +70,165 @@ class Product {
     this.rankDrop180 = data['stats']['salesRankDrops180'];
   }
 
+  get collectibleCountAverageInStockInterval() {
+    let inStock = this.trimInStock(this.inStock());
+    let count = this.toPriceDate(this.history.collectibleCount);
+    let countInStock = [];
+    let average = 0;
+
+    if (inStock == -1) {
+      return -1;
+    }
+
+    for (let i = 0; i < inStock.length; ++i) {
+      countInStock.push(this.historyInterval(count, inStock[i]));
+    }
+
+    average = this.averageArray(countInStock);
+    return average;
+  }
+
+  get fbmPriceAverageInStockInterval() {
+    let inStock = this.trimInStock(this.inStock());
+    let price = this.toPriceDate(this.history.collectible);
+    let priceInStock = [];
+    let average = 0;
+
+    if (inStock == -1) {
+      return -1;
+    }
+
+    price.sort((a,b) => a.keepaMins - b.keepaMins);
+
+    for (let i = 0; i < inStock.length; ++i) {
+      priceInStock.push(this.historyInterval(price, inStock[i]));
+    }
+
+    average = this.averageArray(priceInStock);
+    return average / 100;
+  }
+
+  get collectibleAverageInStockInterval() {
+    let inStock = this.trimInStock(this.inStock());
+    let price = this.toPriceDate(this.history.collectible);
+    let priceInStock = [];
+    let average = 0;
+
+    if (inStock == -1) {
+      return -1;
+    }
+
+    price.sort((a,b) => a.keepaMins - b.keepaMins);
+
+    for (let i = 0; i < inStock.length; ++i) {
+      priceInStock.push(this.historyInterval(price, inStock[i]));
+    }
+
+    average = this.averageArray(priceInStock);
+    return average / 100;
+  }
+
+  get salesRankAverageInStockInterval() {
+    let inStock = this.trimInStock(this.inStock());
+    let rank = this.toPriceDate(this.history.salesRank);
+    let rankInStock = [];
+    let average = 0;
+
+    if (inStock == -1) {
+      return -1;
+    }
+
+    rank.sort((a,b) => a.keepaMins - b.keepaMins);
+
+    for (let i = 0; i < inStock.length; ++i) {
+      rankInStock.push(this.historyInterval(rank, inStock[i]));
+    }
+
+    average = this.averageArray(rankInStock);
+    return average;
+  }
+
+  get listPriceAverageInStockInterval() {
+    let inStock = this.trimInStock(this.inStock());
+    let price = this.toPriceDate(this.history.listPrice);
+    let priceInStock = [];
+    let average = 0;
+
+    if (inStock == -1) {
+      return -1;
+    }
+
+    price.sort((a,b) => a.keepaMins - b.keepaMins);
+
+    for (let i = 0; i < inStock.length; ++i) {
+      priceInStock.push(this.historyInterval(price, inStock[i]));
+    }
+
+    average = this.averageArray(priceInStock);
+    return average / 100;
+  }
+
+  get amazonPriceAverageInStockInterval() {
+    let inStock = this.trimInStock(this.inStock());
+    let price = this.toPriceDate(this.history.amazonPrice);
+    let priceInStock = [];
+    let average = 0;
+
+    if (inStock == -1) {
+      return -1;
+    }
+
+    price.sort((a,b) => a.keepaMins - b.keepaMins);
+
+    for (let i = 0; i < inStock.length; ++i) {
+      priceInStock.push(this.historyInterval(price, inStock[i]));
+    }
+
+    average = this.averageArray(priceInStock);
+    return average / 100;
+  }
+
+  get newPriceAverageInStockInterval() {
+    let inStock = this.trimInStock(this.inStock());
+    let price = this.toPriceDate(this.history.newPrice);
+    let priceInStock = [];
+    let average = 0;
+
+    if (inStock == -1) {
+      return -1;
+    }
+
+    price.sort((a,b) => a.keepaMins - b.keepaMins);
+
+    for (let i = 0; i < inStock.length; ++i) {
+      priceInStock.push(this.historyInterval(price, inStock[i]));
+    }
+
+    average = this.averageArray(priceInStock);
+    return average / 100;
+  }
+
+  get newCountAverageInStockInterval() {
+    let inStock = this.trimInStock(this.inStock());
+    let count = this.toPriceDate(this.history.newCount);
+    let countInStock = [];
+    let average = 0;
+
+    if (inStock == -1) {
+      return -1;
+    }
+
+    //sort by date just in case it's unsorted (should already be sorted) ¯\_(ツ)_/¯ 
+    count.sort((a,b) => a.keepaMins - b.keepaMins);
+
+    for (let i = 0; i < inStock.length; ++i) {
+      countInStock.push(this.historyInterval(count, inStock[i]));
+    }
+    
+    average = this.averageArray(countInStock);
+    return average;
+  }
+
   /**
   * Finds index for a price array of PriceDate objects based on date value
   *
@@ -134,27 +293,6 @@ class Product {
     return sum / numTerms;
   }
 
-  get newCountAverageInStockInterval() {
-    let inStock = this.trimInStock(this.inStock());
-    let count = this.toPriceDate(this.history.newCount);
-    let countInStock = [];
-    let average = 0;
-
-    if (inStock == -1) {
-      return -1
-    }
-
-    //sort by date just in case it's unsorted (should already be sorted) ¯\_(ツ)_/¯ 
-    count.sort((a,b) => a.keepaMins - b.keepaMins);
-
-    for (let i = 0; i < inStock.length; ++i) {
-      countInStock.push(this.historyInterval(count, inStock[i]));
-    }
-    
-    average = this.averageArray(countInStock);
-
-    return average;
-  }
 
   /**
   * Gets values within range of a single date range object
