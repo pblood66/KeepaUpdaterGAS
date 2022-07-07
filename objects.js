@@ -85,6 +85,11 @@ class Product {
     }
 
     average = this.averageArray(countInStock);
+
+    if (isNaN(average)) {
+      return -1;
+    }
+
     return average;
   }
 
@@ -105,6 +110,11 @@ class Product {
     }
 
     average = this.averageArray(priceInStock);
+
+    if (isNaN(average)) {
+      return -1;
+    }
+
     return average / 100;
   }
 
@@ -125,6 +135,11 @@ class Product {
     }
 
     average = this.averageArray(priceInStock);
+    
+    if (isNaN(average)) {
+      return -1;
+    }
+
     return average / 100;
   }
 
@@ -145,6 +160,11 @@ class Product {
     }
 
     average = this.averageArray(rankInStock);
+
+    if (isNaN(average)) {
+      return -1;
+    }
+
     return average;
   }
 
@@ -165,6 +185,11 @@ class Product {
     }
 
     average = this.averageArray(priceInStock);
+
+    if (isNaN(average)) {
+      return -1;
+    }
+
     return average / 100;
   }
 
@@ -185,6 +210,11 @@ class Product {
     }
 
     average = this.averageArray(priceInStock);
+
+    if (isNaN(average)) {
+      return -1;
+    }
+
     return average / 100;
   }
 
@@ -205,6 +235,11 @@ class Product {
     }
 
     average = this.averageArray(priceInStock);
+
+    if (isNaN(average)) {
+      return -1;
+    }
+
     return average / 100;
   }
 
@@ -213,6 +248,7 @@ class Product {
     let count = this.toPriceDate(this.history.newCount);
     let countInStock = [];
     let average = 0;
+
 
     if (inStock == -1) {
       return -1;
@@ -226,6 +262,11 @@ class Product {
     }
     
     average = this.averageArray(countInStock);
+    
+    if (isNaN(average)) {
+      return -1;
+    }
+
     return average;
   }
 
@@ -286,10 +327,14 @@ class Product {
 
     for (let range in arr) {
       for (let term in arr[range]) {
+        if (arr[range][term].price == null) {
+          continue;
+        }
         sum += arr[range][term].price;
         ++numTerms;
       }
     }
+
     return sum / numTerms;
   }
 
