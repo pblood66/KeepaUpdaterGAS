@@ -70,6 +70,172 @@ class Product {
     this.rankDrop180 = data['stats']['salesRankDrops180'];
   }
 
+  /**
+  * Finds index for a price array of PriceDate objects based on date value
+  *
+  * @param {Array} priceArr a price Array of PriceDate objects
+  * @param {Number} keepaMin timestamp in keepa minutes
+  * @return {Number} index of price array 
+  */
+  findIndex(priceArr, keepaMin) {
+    // if first index greater than value
+    if (priceArr[0].keepaMins > keepaMin) {
+        return 0;
+    }
+    // if last index less than value
+    if (priceArr[priceArr.length - 1].keepaMins < keepaMin) {
+      return -1;
+    }
+
+    for (let i = 0; i < priceArr.length; ++i) { 
+      // case is between values
+      if (priceArr[i].keepaMins <= keepaMin && priceArr[i + 1].keepaMins > keepaMin) {
+        return i;
+      }
+    }
+    //value not found
+    return -1;
+  }
+
+  /**
+  * Converts from [date, price, date, price...] format to PriceDate objects
+  *
+  * @param {Array} priceArr array of alternating timestamps and price 
+  * @return {Array} array of PriceDate objects 
+  */
+  toPriceDate(priceArr) {
+    let priceDateArr = [];
+
+    for (let i = 0; i < priceArr.length / 2; ++i) {
+      priceDateArr.push(new PriceDate(priceArr[i * 2], priceArr[(i * 2) + 1]));
+    }
+
+    return priceDateArr;
+  }
+
+  /**
+  * Averages the price property of a 2 dimensional array of PriceDate objects
+  * 1st dimension is for each StockRange object
+  * 2nd dimension is all PriceDate objects that fall within the StockRange object
+  *
+  * @param {Array} arr 2D array of PriceDate objects
+  * @return {Number} average of the price property of arr
+  */
+  averageArray(arr) {
+    let sum = 0;
+    let numTerms = 0;
+
+    for (let range in arr) {
+      for (let term in arr[range]) {
+        sum += arr[range][term].price;
+        ++numTerms;
+      }
+    }
+    return sum / numTerms;
+  }
+
+  get newCountAverageInStockInterval() {
+    let inStock = this.trimInStock(this.inStock());
+    let count = this.toPriceDate(this.history.newCount);
+    let countInStock = [];
+    let average = 0;
+
+    if (inStock == -1) {
+      return -1
+    }
+
+    //sort by date just in case it's unsorted (should already be sorted) ¯\_(ツ)_/¯ 
+    count.sort((a,b) => a.keepaMins - b.keepaMins);
+
+    for (let i = 0; i < inStock.length; ++i) {
+      countInStock.push(this.historyInterval(count, inStock[i]));
+    }
+    
+    average = this.averageArray(countInStock);
+
+    return average;
+  }
+
+  /**
+  * Gets values within range of a single date range object
+  *
+  * @param {Array} priceList array of PriceDate objects
+  * @param {Object} stockRange a StockRange object with a start and end date
+  * @return {Array} array of PriceDate objects that fall within stockRange
+  */
+  historyInterval(priceList, stockRange) {
+    let startIndex = this.findIndex(priceList, stockRange.start);
+    let endIndex = this.findIndex(priceList, stockRange.end) + 1; // + 1 to account for array slicing
+
+    return priceList.slice(startIndex, endIndex);
+  }
+
+  /**
+  * finds index of inStock StockRange objects by start date value
+  *
+  * @param {Array} inStock array of StockRange objects
+  * @param {Number} keepaMins timestamp in keepa minutes
+  * @return {Number} index in inStock based on keepaMins
+  */
+  findInStockIndex(inStock, keepaMins) {
+    for (let i in inStock) {
+      if (inStock[i].start >= keepaMins) {
+        return i;
+      }
+    }
+    if (inStock[inStock.length - 1].start < keepaMins) {
+      return inStock.length - 1;
+    }
+    return 0;
+  }
+
+  /**
+  * Trims inStock array to the product date range
+  *
+  * @param {Array} inStock array of PriceDate objects over the entire lifetime of the product
+  * @return {Array} array of PriceDate objects from the range of startDate to endDate
+  */
+  trimInStock(inStock) {
+    return inStock.slice(this.findInStockIndex(inStock, this.startDate), this.findInStockIndex(inStock, this.endDate))
+  }
+
+  /**
+  * Gets ranges when product is in stock over it's entire lifetime
+  *
+  * @return {Array} array of date range objects where the product is in stock at amazon
+  */
+  inStock() {
+    let inStock = [];
+    let startDate = -1;
+    let endDate = -1;
+    let amazon = this.history.amazonPrice;
+                 
+    for (let i = 0; i < amazon.length; ++i) {
+      // skip all date values
+      if (i % 2 == 0) {
+        continue;
+      }
+      // skip non null prices unless startDate is -1
+      if (amazon[i] != -1) {
+        if (startDate == -1) { // start of a new range
+          startDate = amazon[i - 1];
+        }
+        continue;
+      }
+      else {
+        if (startDate == -1) { // skip any null values after initial null value
+          continue;
+        }
+        // first null value means that it's the end of range
+        endDate = amazon[i - 1];
+        inStock.push(new StockRange(startDate, endDate));
+        startDate = -1;
+      }
+    }
+
+    return inStock;
+  }
+
   get avgAmazonAtInterval() {
     return parseFloat(averageAtInterval(this.history.amazonPrice, this.startDate, this.endDate)) / 100;
   }
@@ -80,6 +246,54 @@ class Product {
 
   get avgSalesRankAtInterval() {
     return parseInt(averageAtInterval(this.history.salesRank, this.startDate, this.endDate));
+  }
+
+  get avgListPriceAtInterval() {
+    return parseFloat(averageAtInterval(this.history.listPrice, this.startDate, this.endDate)) / 100;
+  }
+
+  get avgCollectibleAtInterval() {
+    return parseFloat(averageAtInterval(this.history.collectible, this.startDate, this.endDate)) / 100;
+  }
+
+  get avgFbmPriceAtInterval() {
+    return parseFloat(averageAtInterval(this.history.fbmPrice, this.startDate, this.endDate)) / 100;
+  }
+
+  get avgLightningAtInterval() {
+    return parseFloat(averageAtInterval(this.history.lightningDeal, this.startDate, this.endDate)) / 100;
+  }
+
+  get avgWarehouseAtInterval() {
+    return parseFloat(averageAtInterval(this.history.warehouse, this.startDate, this.endDate)) / 100;
+  }
+
+  get avgFbaPriceAtInterval() {
+    return parseFloat(averageAtInterval(this.history.fba, this.startDate, this.endDate)) / 100;
+  }
+
+  get avgNewCountAtInterval() {
+    return parseFloat(averageAtInterval(this.history.amazonPrice, this.startDate, this.endDate)) / 100;
+  }
+
+  get avgCollectibleCountAtInterval() {
+    return parseFloat(averageAtInterval(this.history.collectibleCount, this.startDate, this.endDate)) / 100;
+  }
+
+  get avgRatingAtInterval() {
+    return parseFloat(averageAtInterval(this.history.rating, this.startDate, this.endDate)) / 100;
+  }
+
+  get avgReviewCountAtInterval() {
+    return parseFloat(averageAtInterval(this.history.reviewCount, this.startDate, this.endDate)) / 100;
+  }
+
+  get avgTradeInAtInterval() {
+    return parseFloat(averageAtInterval(this.history.tradeIn, this.startDate, this.endDate)) / 100;
+  }
+
+  get avgRentalAtInterval() {
+    return parseFloat(averageAtInterval(this.history.rental, this.startDate, this.endDate)) / 100;
   }
 
   get firstAmazonStock() {
@@ -330,6 +544,20 @@ class Product {
   get avg180RentalPrice() { return this.avg180.rental / 100; }
 }
 
+class StockRange {
+  constructor(start, end) {
+    this.start = start;
+    this.end = end;
+  }
+}
+
+class PriceDate {
+  constructor(keepaMinutes, price) {
+    this.price = price;
+    this.keepaMins = keepaMinutes;
+  }
+}
+
 class Dimensions {
   constructor(height, length, width, weight, quantity) {
     this.height = height;
@@ -343,3 +571,71 @@ class Dimensions {
     return this.length + "mm x " + this.width + "mm x " + this.height + "mm " + this.weight + "g"
   }
 }
+
+class Prices {
+  constructor(priceArray) {
+    this.priceArray = priceArray;
+  }
+
+  get amazonPrice() {
+    return this.priceArray[0];
+  }
+
+  get newPrice() {
+    return this.priceArray[1];
+  }
+  
+  get salesRank() {
+    return this.priceArray[3];
+  }
+    
+  get listPrice() {
+    return this.priceArray[4];
+
+  }
+
+  get collectible() {
+    return this.priceArray[5];
+  }
+
+  get fbmPrice() {
+    return this.priceArray[7];
+  }
+
+  get lightningDeal() {
+    return this.priceArray[8];
+  }
+
+  get warehouse() {
+    return this.priceArray[9];
+  }
+
+  get fba() {
+    return this.priceArray[10];
+  }
+
+  get newCount() {
+    return this.priceArray[11];
+  }
+
+  get collectibleCount() {
+    return this.priceArray[14];
+  }
+
+  get rating() {
+    return this.priceArray[16] / 10;
+  }
+    
+  get reviewCount() {
+    return this.priceArray[17];
+  }
+
+  get tradeIn() {
+    return this.priceArray[30];
+  }
+
+  get rental() {
+    return this.priceArray[31];
+  }
+}
+
