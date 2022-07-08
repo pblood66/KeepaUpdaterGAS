@@ -14,7 +14,7 @@ function updateSheetBatches() {
    Logger.log(`Elapsed Product Time: ${endElapsedTime(productStart)}`);
 
    for (let i = 0; i < products.length; ++i) {
-      updateRow(i + rowOffset, products[i], updateStatus);
+      updateRow(i + rowOffset, 2, products[i], updateStatus);
       Logger.log(`Updated ${products[i].asin}`)
    }
    refreshToken();
