@@ -8,7 +8,6 @@ function onOpen(e) {
     .addItem('Update All', 'updateSheetBatches')
     .addItem('Update Product', 'flexibleUpdateProductBatches')
     .addItem('Refresh Tokens', 'refreshToken')
-    .addItem('Validate ASINs', 'validateAsins')
     .addToUi();
 }
 
