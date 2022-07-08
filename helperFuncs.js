@@ -1,32 +1,43 @@
-function findNearIndex(arr, value) {
-  
+/**
+ * Finds the index of compVal if compVal was inserted and sorted into the priceArray
+ * Since date values will not be exact, exact indices are rare
+ * 
+ * @param {Array} priceArray price date array
+ * @param {any} compVal value to compare the date values with
+ * @returns index at which compVal would be around
+ */
+
+function findNearIndex(priceArray, compVal) {
+
   // if first index greater than value
-  if (parseInt(arr[0]) > value) {
-      return 0;
+  if (parseInt(priceArray[0]) > compVal) {
+    return 0;
   }
   // if last index less than value
-  if (parseInt(arr[arr.length - 1]) < value) {
-    return arr.length - 1;
+  if (parseInt(priceArray[priceArray.length - 1]) < compVal) {
+    return priceArray.length - 1;
   }
 
-  for (let i = 0; i < arr.length; ++i) {
+  for (let i = 0; i < priceArray.length; ++i) {
     if (i % 2 == 1) {
       continue;
     }
     // case is between values
-    if (arr[i] <= value && arr[i + 2] > value) {
+    if (priceArray[i] <= compVal && priceArray[i + 2] > compVal) {
       return i;
     }
   }
   //value not found
-  return arr.length - 1;
+  return priceArray.length - 1;
 }
 
 /**
+ * finds indices of an array
+ * !depracated
  * 
  * @param {Array} arr 
  * @param {Number} val 
- * @returns array of indexes with a certain value
+ * @returns array of indices with a certain value
  */
 function getAllIndexes(arr, val) {
   var indexes = [], i;
@@ -37,29 +48,32 @@ function getAllIndexes(arr, val) {
 }
 
 /**
- * updates entire product
+ * finds all indices of a particular value in an array
  * 
- * @param {Number} Row number
- * @param {Object} Product object
- * @return {void}  
+ * @param {any} compVal 
+ * @returns an array with the indices of all compVal
  */
-function updateRow(row, product, settings) {
-  var sheet = ss.getActiveSheet();
-
-  for (let i = 0; i < settings.length / 2; i++) {
-    if (settings[(i * 2) + 1]) {
-      try {
-        let value = product[settings[i * 2]];
-        updateCell(row, i + 2, value, sheet)
-      }
-      catch (err) {
-        Logger.log(err);
-        updateCell(row, i + 2, "Unavailable", sheet)
-      }
+Array.prototype.findAll = function (compVal) {
+  var indices = [], i = 0;
+  for (i; i < this.length; i++) {
+    if (this[i] === compVal) {
+      indices.push(i);
     }
   }
+  return indices;
 }
 
+
+/**
+ * updates entire product
+ * 
+ * 
+ * @param {Number} row row number
+ * @param {Number} col column to start at
+ * @param {Object} product Product object
+ * @param {Array} settings array of settings
+ * @return {void}  
+ */
 function updateRow(row, column, product, settings) {
   var sheet = ss.getActiveSheet();
 

@@ -59,7 +59,7 @@ function flexibleUpdateProductBatches() {
       }
 
       Logger.log(asins);
-      var indexes = getAllIndexes(asins, 0);
+      var indexes = asins.findAll(0);
 
       var productStart = startElapsedTime()
       var products = fetchBatchProduct(asins, getFirstDate(), getEndDate());
@@ -72,8 +72,8 @@ function flexibleUpdateProductBatches() {
       let firstUpdateRow = firstRow + (batch * BATCH_SIZE);
 
       for (let i = 0; i < products.length; ++i) {
-         updateRow(i + firstUpdateRow, column, products[i], updateStatus);
-         Logger.log(`Updated ${products[i].asin}`)
+        updateRow(i + firstUpdateRow, column, products[i], updateStatus);
+        Logger.log(`Updated ${products[i].asin}`)
       }
 
       asins = [];

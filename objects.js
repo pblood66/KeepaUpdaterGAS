@@ -70,20 +70,205 @@ class Product {
     this.rankDrop180 = data['stats']['salesRankDrops180'];
   }
 
+  // !!! Note: will only be documenting the first function if it repeats itself !!!
+
+  get collectibleCountAverageOutStockInterval() {
+    let outStock = this.trimStock(this.outStock());
+    let count = this.toPriceDate(this.history.collectibleCount);
+    let countOutStock = [];
+    let average = 0;
+
+    // trimInStock returns -1 if there is no overlap between outStock and startDate/endDate
+    // negative return values are effectively == null (the null value can be changed in updateCell function)
+    if (outStock == -1) {
+      return -1;
+    }
+
+    // compare the PriceDate array with outStock so that count/priceOutStock only has values when Amazon is out of stock.
+    for (let i = 0; i < outStock.length; ++i) {
+      countOutStock.push(this.historyInterval(count, outStock[i]));
+    }
+
+    // average the price/count values
+    average = this.averageArray(countOutStock);
+
+    if (isNaN(average)) {
+      return -1;
+    }
+
+    return average;
+  }
+
+  get fbmPriceAverageOutStockInterval() {
+    let outStock = this.trimStock(this.outStock());
+    let price = this.toPriceDate(this.history.collectible);
+    let priceOutStock = [];
+    let average = 0;
+
+    if (outStock == -1) {
+      return -1;
+    }
+
+    price.sort((a, b) => a.keepaMins - b.keepaMins);
+
+    for (let i = 0; i < outStock.length; ++i) {
+      priceOutStock.push(this.historyInterval(price, outStock[i]));
+    }
+
+    average = this.averageArray(priceOutStock);
+
+    if (isNaN(average)) {
+      return -1;
+    }
+
+    return average / 100;
+  }
+
+  get collectibleAverageOutStockInterval() {
+    let outStock = this.trimStock(this.outStock());
+    let price = this.toPriceDate(this.history.collectible);
+    let priceOutStock = [];
+    let average = 0;
+
+    if (outStock == -1) {
+      return -1;
+    }
+
+    price.sort((a, b) => a.keepaMins - b.keepaMins);
+
+    for (let i = 0; i < outStock.length; ++i) {
+      priceOutStock.push(this.historyInterval(price, outStock[i]));
+    }
+
+    average = this.averageArray(priceOutStock);
+
+    if (isNaN(average)) {
+      return -1;
+    }
+
+    return average / 100;
+  }
+
+  get salesRankAverageOutStockInterval() {
+    let outStock = this.trimStock(this.OutStock());
+    let rank = this.toPriceDate(this.history.salesRank);
+    let rankOutStock = [];
+    let average = 0;
+
+    if (outStock == -1) {
+      return -1;
+    }
+
+    rank.sort((a, b) => a.keepaMins - b.keepaMins);
+
+    for (let i = 0; i < outStock.length; ++i) {
+      rankOutStock.push(this.historyInterval(rank, outStock[i]));
+    }
+
+    average = this.averageArray(rankOutStock);
+
+    if (isNaN(average)) {
+      return -1;
+    }
+
+    return average;
+  }
+
+  get listPriceAverageOutStockInterval() {
+    let outStock = this.trimStock(this.outStock());
+    let price = this.toPriceDate(this.history.listPrice);
+    let priceOutStock = [];
+    let average = 0;
+
+    if (outStock == -1) {
+      return -1;
+    }
+
+    price.sort((a, b) => a.keepaMins - b.keepaMins);
+
+    for (let i = 0; i < outStock.length; ++i) {
+      priceOutStock.push(this.historyInterval(price, outStock[i]));
+    }
+
+    average = this.averageArray(priceOutStock);
+
+    if (isNaN(average)) {
+      return -1;
+    }
+
+    return average / 100;
+  }
+
+  get newPriceAverageOutStockInterval() {
+    let outStock = this.trimStock(this.outStock());
+    let price = this.toPriceDate(this.history.newPrice);
+    let priceOutStock = [];
+    let average = 0;
+
+    if (outStock == -1) {
+      return -1;
+    }
+
+    price.sort((a, b) => a.keepaMins - b.keepaMins);
+
+    for (let i = 0; i < outStock.length; ++i) {
+      priceOutStock.push(this.historyInterval(price, outStock[i]));
+    }
+
+    average = this.averageArray(priceOutStock);
+
+    if (isNaN(average)) {
+      return -1;
+    }
+
+    return average / 100;
+  }
+
+  get newCountAverageOutStockInterval() {
+    let outStock = this.trimStock(this.outStock());
+    let count = this.toPriceDate(this.history.newCount);
+    let countOutStock = [];
+    let average = 0;
+
+
+    if (outStock == -1) {
+      return -1;
+    }
+
+    //sort by date just in case it's unsorted (should already be sorted) ¯\_(ツ)_/¯ 
+    count.sort((a, b) => a.keepaMins - b.keepaMins);
+
+    for (let i = 0; i < outStock.length; ++i) {
+      countOutStock.push(this.historyInterval(count, outStock[i]));
+    }
+
+    average = this.averageArray(countOutStock);
+
+    if (isNaN(average)) {
+      return -1;
+    }
+
+    return average;
+  }
+
   get collectibleCountAverageInStockInterval() {
-    let inStock = this.trimInStock(this.inStock());
+    let inStock = this.trimStock(this.inStock());
     let count = this.toPriceDate(this.history.collectibleCount);
     let countInStock = [];
     let average = 0;
 
+    // trimInStock returns -1 if there is no overlap between inStock and startDate/endDate
+    // negative return values are effectively == null (the null value can be changed in updateCell function)
     if (inStock == -1) {
       return -1;
     }
 
+    // compare the PriceDate array with inStock so that count/priceInStock only has values when Amazon is in stock.
     for (let i = 0; i < inStock.length; ++i) {
       countInStock.push(this.historyInterval(count, inStock[i]));
     }
 
+    // average the price/count values
     average = this.averageArray(countInStock);
 
     if (isNaN(average)) {
@@ -94,7 +279,7 @@ class Product {
   }
 
   get fbmPriceAverageInStockInterval() {
-    let inStock = this.trimInStock(this.inStock());
+    let inStock = this.trimStock(this.inStock());
     let price = this.toPriceDate(this.history.collectible);
     let priceInStock = [];
     let average = 0;
@@ -103,7 +288,7 @@ class Product {
       return -1;
     }
 
-    price.sort((a,b) => a.keepaMins - b.keepaMins);
+    price.sort((a, b) => a.keepaMins - b.keepaMins);
 
     for (let i = 0; i < inStock.length; ++i) {
       priceInStock.push(this.historyInterval(price, inStock[i]));
@@ -119,7 +304,7 @@ class Product {
   }
 
   get collectibleAverageInStockInterval() {
-    let inStock = this.trimInStock(this.inStock());
+    let inStock = this.trimStock(this.inStock());
     let price = this.toPriceDate(this.history.collectible);
     let priceInStock = [];
     let average = 0;
@@ -128,14 +313,14 @@ class Product {
       return -1;
     }
 
-    price.sort((a,b) => a.keepaMins - b.keepaMins);
+    price.sort((a, b) => a.keepaMins - b.keepaMins);
 
     for (let i = 0; i < inStock.length; ++i) {
       priceInStock.push(this.historyInterval(price, inStock[i]));
     }
 
     average = this.averageArray(priceInStock);
-    
+
     if (isNaN(average)) {
       return -1;
     }
@@ -144,7 +329,7 @@ class Product {
   }
 
   get salesRankAverageInStockInterval() {
-    let inStock = this.trimInStock(this.inStock());
+    let inStock = this.trimStock(this.inStock());
     let rank = this.toPriceDate(this.history.salesRank);
     let rankInStock = [];
     let average = 0;
@@ -153,7 +338,7 @@ class Product {
       return -1;
     }
 
-    rank.sort((a,b) => a.keepaMins - b.keepaMins);
+    rank.sort((a, b) => a.keepaMins - b.keepaMins);
 
     for (let i = 0; i < inStock.length; ++i) {
       rankInStock.push(this.historyInterval(rank, inStock[i]));
@@ -169,7 +354,7 @@ class Product {
   }
 
   get listPriceAverageInStockInterval() {
-    let inStock = this.trimInStock(this.inStock());
+    let inStock = this.trimStock(this.inStock());
     let price = this.toPriceDate(this.history.listPrice);
     let priceInStock = [];
     let average = 0;
@@ -178,7 +363,7 @@ class Product {
       return -1;
     }
 
-    price.sort((a,b) => a.keepaMins - b.keepaMins);
+    price.sort((a, b) => a.keepaMins - b.keepaMins);
 
     for (let i = 0; i < inStock.length; ++i) {
       priceInStock.push(this.historyInterval(price, inStock[i]));
@@ -194,7 +379,7 @@ class Product {
   }
 
   get amazonPriceAverageInStockInterval() {
-    let inStock = this.trimInStock(this.inStock());
+    let inStock = this.trimStock(this.inStock());
     let price = this.toPriceDate(this.history.amazonPrice);
     let priceInStock = [];
     let average = 0;
@@ -203,7 +388,7 @@ class Product {
       return -1;
     }
 
-    price.sort((a,b) => a.keepaMins - b.keepaMins);
+    price.sort((a, b) => a.keepaMins - b.keepaMins);
 
     for (let i = 0; i < inStock.length; ++i) {
       priceInStock.push(this.historyInterval(price, inStock[i]));
@@ -219,7 +404,7 @@ class Product {
   }
 
   get newPriceAverageInStockInterval() {
-    let inStock = this.trimInStock(this.inStock());
+    let inStock = this.trimStock(this.inStock());
     let price = this.toPriceDate(this.history.newPrice);
     let priceInStock = [];
     let average = 0;
@@ -228,7 +413,7 @@ class Product {
       return -1;
     }
 
-    price.sort((a,b) => a.keepaMins - b.keepaMins);
+    price.sort((a, b) => a.keepaMins - b.keepaMins);
 
     for (let i = 0; i < inStock.length; ++i) {
       priceInStock.push(this.historyInterval(price, inStock[i]));
@@ -244,7 +429,7 @@ class Product {
   }
 
   get newCountAverageInStockInterval() {
-    let inStock = this.trimInStock(this.inStock());
+    let inStock = this.trimStock(this.inStock());
     let count = this.toPriceDate(this.history.newCount);
     let countInStock = [];
     let average = 0;
@@ -255,14 +440,14 @@ class Product {
     }
 
     //sort by date just in case it's unsorted (should already be sorted) ¯\_(ツ)_/¯ 
-    count.sort((a,b) => a.keepaMins - b.keepaMins);
+    count.sort((a, b) => a.keepaMins - b.keepaMins);
 
     for (let i = 0; i < inStock.length; ++i) {
       countInStock.push(this.historyInterval(count, inStock[i]));
     }
-    
+
     average = this.averageArray(countInStock);
-    
+
     if (isNaN(average)) {
       return -1;
     }
@@ -280,14 +465,14 @@ class Product {
   findIndex(priceArr, keepaMin) {
     // if first index greater than value
     if (priceArr[0].keepaMins > keepaMin) {
-        return 0;
+      return 0;
     }
     // if last index less than value
     if (priceArr[priceArr.length - 1].keepaMins < keepaMin) {
       return -1;
     }
 
-    for (let i = 0; i < priceArr.length; ++i) { 
+    for (let i = 0; i < priceArr.length; ++i) {
       // case is between values
       if (priceArr[i].keepaMins <= keepaMin && priceArr[i + 1].keepaMins > keepaMin) {
         return i;
@@ -325,9 +510,11 @@ class Product {
     let sum = 0;
     let numTerms = 0;
 
+    // loop through 1st dimension of array
     for (let range in arr) {
+      // loop through 2nd dimension of array
       for (let term in arr[range]) {
-        if (arr[range][term].price == null) {
+        if (arr[range][term].price == null) { // edge case (for some reason getting null values. just throw them out)
           continue;
         }
         sum += arr[range][term].price;
@@ -366,20 +553,51 @@ class Product {
         return i;
       }
     }
-    if (inStock[inStock.length - 1].start < keepaMins) {
+    if (inStock[inStock.length - 1].start < keepaMins) { // only really need to test if inStock is less than keepaMins
       return inStock.length - 1;
     }
+    // if it runs all the way down here that means that the start of inStock is < keepaMins
+    // may or may not be any overlap 
     return 0;
   }
 
   /**
   * Trims inStock array to the product date range
   *
-  * @param {Array} inStock array of PriceDate objects over the entire lifetime of the product
+  * @param {Array} stock array of PriceDate objects over the entire lifetime of the product
   * @return {Array} array of PriceDate objects from the range of startDate to endDate
   */
-  trimInStock(inStock) {
-    return inStock.slice(this.findInStockIndex(inStock, this.startDate), this.findInStockIndex(inStock, this.endDate))
+  trimStock(stock) { // separate trim function in case the entirety of inStock needed to be used for another purpose 
+    return stock.slice(this.findInStockIndex(stock, this.startDate), this.findInStockIndex(stock, this.endDate))
+  }
+
+  outStock() {
+    let outStock = [];
+    let startDate = -1;
+    let endDate = -1;
+    let amazon = this.history.amazonPrice;
+
+    for (let i = 0; i < amazon.length; ++i) {
+      if (i % 2 == 0) {
+        continue;
+      }
+      if (amazon[i] == -1) {
+        if (startDate == -1) {
+          startDate = amazon[i - 1];
+        }
+        continue;
+      }
+      else {
+        if (startDate == -1) {
+          continue;
+        }
+        endDate = amazon[i - 1];
+        outStock.push(new StockRange(startDate, endDate));
+        startDate = -1;
+      }
+    }
+
+    return outStock
   }
 
   /**
@@ -392,7 +610,7 @@ class Product {
     let startDate = -1;
     let endDate = -1;
     let amazon = this.history.amazonPrice;
-                 
+
     for (let i = 0; i < amazon.length; ++i) {
       // skip all date values
       if (i % 2 == 0) {
@@ -482,9 +700,9 @@ class Product {
   get firstAmazonStock() {
     var amazon = this.history.amazonPrice;
     var placeholderIndex = -1;
+    // loop and compare the price values until a non negative price is reached
     for (let i = 0; i < amazon.length / 2; ++i) {
       if (amazon[(i * 2) + 1] != -1) {
-        Logger.log(amazon[i * 2 + 1])
         placeholderIndex = i * 2;
         break;
       }
@@ -734,7 +952,7 @@ class StockRange {
   }
 }
 
-class PriceDate {
+class PriceDate { // if I had more time I would refactor the csv arrays to PriceDate objects
   constructor(keepaMinutes, price) {
     this.price = price;
     this.keepaMins = keepaMinutes;
@@ -755,6 +973,9 @@ class Dimensions {
   }
 }
 
+// refactor to enums instead and just use arrays
+// also utilizing PriceDate objects
+// could then get rid of this class
 class Prices {
   constructor(priceArray) {
     this.priceArray = priceArray;
@@ -767,11 +988,11 @@ class Prices {
   get newPrice() {
     return this.priceArray[1];
   }
-  
+
   get salesRank() {
     return this.priceArray[3];
   }
-    
+
   get listPrice() {
     return this.priceArray[4];
 
@@ -808,7 +1029,7 @@ class Prices {
   get rating() {
     return this.priceArray[16] / 10;
   }
-    
+
   get reviewCount() {
     return this.priceArray[17];
   }
